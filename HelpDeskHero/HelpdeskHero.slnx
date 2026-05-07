@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/HelpDeskHero.Api/HelpDeskHero.Api.csproj" />
+    <Project Path="src/HelpDeskHero.Application/HelpDeskHero.Application.csproj" />
+    <Project Path="src/HelpDeskHero.Domain/HelpDeskHero.Domain.csproj" />
+    <Project Path="src/HelpDeskHero.Infrastructure/HelpDeskHero.Infrastructure.csproj" />
+    <Project Path="src/HelpDeskHero.Shared/HelpDeskHero.Shared.csproj" />
+    <Project Path="src/HelpDeskHero.UI/HelpDeskHero.UI.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/HelpDeskHero.IntegrationTests/HelpDeskHero.IntegrationTests.csproj" />
+    <Project Path="tests/HelpDeskHero.UnitTests/HelpDeskHero.UnitTests.csproj" />
+  </Folder>
+</Solution>

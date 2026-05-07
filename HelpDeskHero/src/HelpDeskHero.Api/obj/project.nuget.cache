@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "7f9kOz3QAdo=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\blad\\Documents\\GitHub\\HelpDeskHerov2\\HelpDeskHero\\src\\HelpDeskHero.Api\\HelpDeskHero.Api.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\blad\\.nuget\\packages\\microsoft.aspnetcore.openapi\\10.0.7\\microsoft.aspnetcore.openapi.10.0.7.nupkg.sha512",
+    "C:\\Users\\blad\\.nuget\\packages\\microsoft.openapi\\2.0.0\\microsoft.openapi.2.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

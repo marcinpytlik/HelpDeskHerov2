@@ -1,0 +1,11 @@
+C:\Users\blad\Documents\GitHub\HelpDeskHerov2\HelpDeskHero\src\HelpDeskHero.Shared\bin\Debug\net10.0\HelpDeskHero.Shared.deps.json
+C:\Users\blad\Documents\GitHub\HelpDeskHerov2\HelpDeskHero\src\HelpDeskHero.Shared\bin\Debug\net10.0\HelpDeskHero.Shared.dll
+C:\Users\blad\Documents\GitHub\HelpDeskHerov2\HelpDeskHero\src\HelpDeskHero.Shared\bin\Debug\net10.0\HelpDeskHero.Shared.pdb
+C:\Users\blad\Documents\GitHub\HelpDeskHerov2\HelpDeskHero\src\HelpDeskHero.Shared\obj\Debug\net10.0\HelpDeskHero.Shared.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\blad\Documents\GitHub\HelpDeskHerov2\HelpDeskHero\src\HelpDeskHero.Shared\obj\Debug\net10.0\HelpDeskHero.Shared.AssemblyInfoInputs.cache
+C:\Users\blad\Documents\GitHub\HelpDeskHerov2\HelpDeskHero\src\HelpDeskHero.Shared\obj\Debug\net10.0\HelpDeskHero.Shared.AssemblyInfo.cs
+C:\Users\blad\Documents\GitHub\HelpDeskHerov2\HelpDeskHero\src\HelpDeskHero.Shared\obj\Debug\net10.0\HelpDeskHero.Shared.csproj.CoreCompileInputs.cache
+C:\Users\blad\Documents\GitHub\HelpDeskHerov2\HelpDeskHero\src\HelpDeskHero.Shared\obj\Debug\net10.0\HelpDeskHero.Shared.dll
+C:\Users\blad\Documents\GitHub\HelpDeskHerov2\HelpDeskHero\src\HelpDeskHero.Shared\obj\Debug\net10.0\refint\HelpDeskHero.Shared.dll
+C:\Users\blad\Documents\GitHub\HelpDeskHerov2\HelpDeskHero\src\HelpDeskHero.Shared\obj\Debug\net10.0\HelpDeskHero.Shared.pdb
+C:\Users\blad\Documents\GitHub\HelpDeskHerov2\HelpDeskHero\src\HelpDeskHero.Shared\obj\Debug\net10.0\ref\HelpDeskHero.Shared.dll

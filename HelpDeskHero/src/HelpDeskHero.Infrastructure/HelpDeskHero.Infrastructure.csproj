@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\HelpDeskHero.Domain\HelpDeskHero.Domain.csproj" />
+    <ProjectReference Include="..\HelpDeskHero.Application\HelpDeskHero.Application.csproj" />
+    <ProjectReference Include="..\HelpDeskHero.Shared\HelpDeskHero.Shared.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>
