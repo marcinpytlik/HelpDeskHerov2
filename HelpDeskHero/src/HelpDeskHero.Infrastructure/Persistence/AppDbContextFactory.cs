@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
-
+using Microsoft.Data.SqlClient;
 namespace HelpDeskHero.Infrastructure.Persistence;
 
 public sealed class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
@@ -46,6 +46,20 @@ public sealed class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbConte
             throw new InvalidOperationException(
                 "Brak connection stringa 'MigrationConnection' albo 'DefaultConnection'.");
         }
+var csb = new SqlConnectionStringBuilder(connectionString);
+
+var usedConnectionName =
+    configuration.GetConnectionString("MigrationConnection") is not null
+        ? "MigrationConnection"
+        : "DefaultConnection";
+
+Console.WriteLine("==============================================");
+Console.WriteLine("EF Core design-time DbContext factory");
+Console.WriteLine($"Connection name : {usedConnectionName}");
+Console.WriteLine($"Server          : {csb.DataSource}");
+Console.WriteLine($"Database        : {csb.InitialCatalog}");
+Console.WriteLine($"User Id         : {csb.UserID}");
+Console.WriteLine("==============================================");
 
         var options = new DbContextOptionsBuilder<AppDbContext>()
             .UseSqlServer(connectionString)

@@ -1,5 +1,14 @@
 USE master;
 GO
+ALTER DATABASE [HelpDeskHeroDb] SET  SINGLE_USER WITH ROLLBACK IMMEDIATE
+GO
+USE [master]
+GO
+/****** Object:  Database [HelpDeskHeroDb]    Script Date: 17.05.2026 21:04:05 ******/
+DROP DATABASE [HelpDeskHeroDb]
+GO
+EXEC msdb.dbo.sp_delete_database_backuphistory @database_name = N'HelpDeskHeroDb'
+GO
 
 IF DB_ID(N'HelpDeskHeroDb') IS NULL
 BEGIN

@@ -260,6 +260,90 @@ W produkcji hasła powinny być w bezpiecznym miejscu, na przykład w zmiennych 
 # Krok 6 — DesignTimeDbContextFactory
 
 Żeby `dotnet ef` używał connection stringa migracyjnego, tworzymy fabrykę.
+Żeby dotnet ef używał connection stringa migracyjnego, tworzymy fabrykę AppDbContextFactory.
+
+I tutaj musimy bardzo wyraźnie rozróżnić dwie sytuacje.
+
+Pierwsza sytuacja to migracja wykonywana podczas uruchamiania aplikacji.
+
+W wielu prostych projektach można spotkać taki kod w Program.cs:
+
+using var scope = app.Services.CreateScope();
+
+var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+await db.Database.MigrateAsync();
+
+To oznacza, że aplikacja podczas startu sama próbuje wykonać migracje na bazie danych.
+
+W development może to być wygodne, bo uruchamiamy aplikację i baza sama się aktualizuje.
+
+Ale w środowisku produkcyjnym to podejście ma kilka problemów.
+
+Po pierwsze, konto runtime aplikacji musiałoby mieć uprawnienia do zmiany schematu bazy danych.
+
+Czyli aplikacja musiałaby mieć dużo szersze uprawnienia niż tylko SELECT, INSERT, UPDATE i DELETE.
+
+Po drugie, jeżeli mamy kilka instancji aplikacji, na przykład kilka replik API, to kilka procesów może próbować uruchomić migrację w podobnym czasie.
+
+Po trzecie, migracja może się nie udać podczas startu aplikacji, a wtedy aplikacja może nie wstać.
+
+Po czwarte, zmiana schematu bazy danych powinna być świadomym elementem procesu wdrożeniowego, a nie efektem ubocznym startu aplikacji.
+
+Dlatego w tym projekcie nie traktujemy Database.Migrate() przy starcie jako modelu produkcyjnego.
+
+Druga sytuacja to migracja wykonywana poza aplikacją runtime.
+
+I to jest model, który chcemy pokazać w HelpDeskHero.
+
+Migracje wykonujemy przez:
+
+dotnet ef database update
+
+albo generujemy skrypt SQL:
+
+dotnet ef migrations script --idempotent
+
+W tym modelu aplikacja runtime nie musi mieć uprawnień do zmiany schematu.
+
+Do migracji używamy osobnego connection stringa:
+
+MigrationConnection
+
+A do codziennej pracy aplikacji używamy:
+
+DefaultConnection
+
+Czyli mamy dwa różne konteksty bezpieczeństwa:
+
+MigrationConnection -> konto hdh_migrator
+DefaultConnection   -> konto hdh_app
+
+hdh_migrator może wykonywać migracje.
+
+hdh_app działa w aplikacji i ma tylko uprawnienia potrzebne do pracy z danymi.
+
+I właśnie tutaj potrzebna jest AppDbContextFactory.
+
+Narzędzie dotnet ef działa w czasie projektowym, czyli poza normalnym requestem HTTP i poza typowym przepływem aplikacji.
+
+Ono musi wiedzieć, jak utworzyć AppDbContext.
+
+Jeżeli tego nie wie, pojawi się błąd w stylu:
+
+Unable to resolve service for type DbContextOptions<AppDbContext>
+
+Fabryka IDesignTimeDbContextFactory<AppDbContext> mówi narzędziom EF Core:
+
+Kiedy pracujesz w trybie design-time, zbuduj konfigurację, odczytaj connection string migracyjny i na jego podstawie utwórz AppDbContext.
+
+Dzięki temu dotnet ef użyje konta migracyjnego, a API w runtime nadal będzie używać konta aplikacyjnego.
+
+To jest kluczowa różnica.
+
+Nie chcemy, żeby aplikacja runtime migrowała bazę.
+
+Chcemy, żeby migracje były wykonywane kontrolowanie: przez konto migracyjne, pipeline, skrypt SQL albo administratora.
 
 Plik:
 
