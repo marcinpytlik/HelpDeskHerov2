@@ -11,7 +11,7 @@ GO
 BEGIN TRANSACTION;
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260517192157_InitialCreate'
+    WHERE [MigrationId] = N'20260517205638_InitialCreate'
 )
 BEGIN
     CREATE TABLE [Tenants] (
@@ -33,7 +33,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260517192157_InitialCreate'
+    WHERE [MigrationId] = N'20260517205638_InitialCreate'
 )
 BEGIN
     CREATE TABLE [OrganizationUnits] (
@@ -60,7 +60,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260517192157_InitialCreate'
+    WHERE [MigrationId] = N'20260517205638_InitialCreate'
 )
 BEGIN
     CREATE TABLE [TicketTypes] (
@@ -85,7 +85,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260517192157_InitialCreate'
+    WHERE [MigrationId] = N'20260517205638_InitialCreate'
 )
 BEGIN
     CREATE TABLE [WorkflowDefinitions] (
@@ -112,7 +112,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260517192157_InitialCreate'
+    WHERE [MigrationId] = N'20260517205638_InitialCreate'
 )
 BEGIN
     CREATE TABLE [WorkflowStates] (
@@ -138,7 +138,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260517192157_InitialCreate'
+    WHERE [MigrationId] = N'20260517205638_InitialCreate'
 )
 BEGIN
     CREATE TABLE [Tickets] (
@@ -174,7 +174,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260517192157_InitialCreate'
+    WHERE [MigrationId] = N'20260517205638_InitialCreate'
 )
 BEGIN
     CREATE TABLE [WorkflowTransitions] (
@@ -203,7 +203,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260517192157_InitialCreate'
+    WHERE [MigrationId] = N'20260517205638_InitialCreate'
 )
 BEGIN
     CREATE INDEX [IX_OrganizationUnits_ParentOrganizationUnitId] ON [OrganizationUnits] ([ParentOrganizationUnitId]);
@@ -211,7 +211,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260517192157_InitialCreate'
+    WHERE [MigrationId] = N'20260517205638_InitialCreate'
 )
 BEGIN
     CREATE UNIQUE INDEX [IX_OrganizationUnits_TenantId_Code] ON [OrganizationUnits] ([TenantId], [Code]);
@@ -219,7 +219,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260517192157_InitialCreate'
+    WHERE [MigrationId] = N'20260517205638_InitialCreate'
 )
 BEGIN
     CREATE UNIQUE INDEX [IX_Tenants_Code] ON [Tenants] ([Code]);
@@ -227,7 +227,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260517192157_InitialCreate'
+    WHERE [MigrationId] = N'20260517205638_InitialCreate'
 )
 BEGIN
     CREATE INDEX [IX_Tickets_OrganizationUnitId] ON [Tickets] ([OrganizationUnitId]);
@@ -235,7 +235,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260517192157_InitialCreate'
+    WHERE [MigrationId] = N'20260517205638_InitialCreate'
 )
 BEGIN
     CREATE INDEX [IX_Tickets_TenantId_AssignedToUserId_CreatedAtUtc] ON [Tickets] ([TenantId], [AssignedToUserId], [CreatedAtUtc]);
@@ -243,7 +243,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260517192157_InitialCreate'
+    WHERE [MigrationId] = N'20260517205638_InitialCreate'
 )
 BEGIN
     CREATE INDEX [IX_Tickets_TenantId_IsDeleted_CreatedAtUtc] ON [Tickets] ([TenantId], [IsDeleted], [CreatedAtUtc]);
@@ -251,7 +251,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260517192157_InitialCreate'
+    WHERE [MigrationId] = N'20260517205638_InitialCreate'
 )
 BEGIN
     CREATE UNIQUE INDEX [IX_Tickets_TenantId_Number] ON [Tickets] ([TenantId], [Number]);
@@ -259,7 +259,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260517192157_InitialCreate'
+    WHERE [MigrationId] = N'20260517205638_InitialCreate'
 )
 BEGIN
     CREATE INDEX [IX_Tickets_TenantId_WorkflowStateId_CreatedAtUtc] ON [Tickets] ([TenantId], [WorkflowStateId], [CreatedAtUtc]);
@@ -267,7 +267,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260517192157_InitialCreate'
+    WHERE [MigrationId] = N'20260517205638_InitialCreate'
 )
 BEGIN
     CREATE INDEX [IX_Tickets_TicketTypeId] ON [Tickets] ([TicketTypeId]);
@@ -275,7 +275,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260517192157_InitialCreate'
+    WHERE [MigrationId] = N'20260517205638_InitialCreate'
 )
 BEGIN
     CREATE INDEX [IX_Tickets_WorkflowStateId] ON [Tickets] ([WorkflowStateId]);
@@ -283,7 +283,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260517192157_InitialCreate'
+    WHERE [MigrationId] = N'20260517205638_InitialCreate'
 )
 BEGIN
     CREATE UNIQUE INDEX [IX_TicketTypes_TenantId_Code] ON [TicketTypes] ([TenantId], [Code]);
@@ -291,7 +291,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260517192157_InitialCreate'
+    WHERE [MigrationId] = N'20260517205638_InitialCreate'
 )
 BEGIN
     CREATE UNIQUE INDEX [IX_WorkflowDefinitions_TenantId_TicketTypeId_Code] ON [WorkflowDefinitions] ([TenantId], [TicketTypeId], [Code]);
@@ -299,7 +299,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260517192157_InitialCreate'
+    WHERE [MigrationId] = N'20260517205638_InitialCreate'
 )
 BEGIN
     CREATE INDEX [IX_WorkflowDefinitions_TicketTypeId] ON [WorkflowDefinitions] ([TicketTypeId]);
@@ -307,7 +307,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260517192157_InitialCreate'
+    WHERE [MigrationId] = N'20260517205638_InitialCreate'
 )
 BEGIN
     CREATE UNIQUE INDEX [IX_WorkflowStates_WorkflowDefinitionId_Code] ON [WorkflowStates] ([WorkflowDefinitionId], [Code]);
@@ -315,7 +315,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260517192157_InitialCreate'
+    WHERE [MigrationId] = N'20260517205638_InitialCreate'
 )
 BEGIN
     CREATE INDEX [IX_WorkflowStates_WorkflowDefinitionId_SortOrder] ON [WorkflowStates] ([WorkflowDefinitionId], [SortOrder]);
@@ -323,7 +323,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260517192157_InitialCreate'
+    WHERE [MigrationId] = N'20260517205638_InitialCreate'
 )
 BEGIN
     CREATE INDEX [IX_WorkflowTransitions_FromStateId] ON [WorkflowTransitions] ([FromStateId]);
@@ -331,7 +331,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260517192157_InitialCreate'
+    WHERE [MigrationId] = N'20260517205638_InitialCreate'
 )
 BEGIN
     CREATE INDEX [IX_WorkflowTransitions_ToStateId] ON [WorkflowTransitions] ([ToStateId]);
@@ -339,7 +339,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260517192157_InitialCreate'
+    WHERE [MigrationId] = N'20260517205638_InitialCreate'
 )
 BEGIN
     CREATE UNIQUE INDEX [IX_WorkflowTransitions_WorkflowDefinitionId_FromStateId_ToStateId] ON [WorkflowTransitions] ([WorkflowDefinitionId], [FromStateId], [ToStateId]);
@@ -347,11 +347,11 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20260517192157_InitialCreate'
+    WHERE [MigrationId] = N'20260517205638_InitialCreate'
 )
 BEGIN
     INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-    VALUES (N'20260517192157_InitialCreate', N'10.0.7');
+    VALUES (N'20260517205638_InitialCreate', N'10.0.7');
 END;
 
 COMMIT;
