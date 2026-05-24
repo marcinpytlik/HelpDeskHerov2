@@ -1,0 +1,53 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {
+      "HelpDeskHero.Application/1.0.0": {
+        "dependencies": {
+          "HelpDeskHero.Domain": "1.0.0",
+          "HelpDeskHero.Shared": "1.0.0"
+        },
+        "runtime": {
+          "HelpDeskHero.Application.dll": {}
+        }
+      },
+      "HelpDeskHero.Domain/1.0.0": {
+        "runtime": {
+          "HelpDeskHero.Domain.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "HelpDeskHero.Shared/1.0.0": {
+        "runtime": {
+          "HelpDeskHero.Shared.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "HelpDeskHero.Application/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "HelpDeskHero.Domain/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "HelpDeskHero.Shared/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
