@@ -1,0 +1,42 @@
+# Build output
+bin/
+obj/
+.vs/
+
+# User / IDE files
+*.user
+*.suo
+
+# VS Code local files
+.vscode/*.log
+
+# Environment-specific settings
+appsettings.Development.json
+appsettings.Production.json
+
+# Logs and test artifacts
+logs/
+TestResults/
+*.trx
+coverage/
+coverage.cobertura.xml
+
+# Local databases and SQL backups
+*.db
+*.bak
+*.trn
+*.dif
+*.ldf
+*.mdf
+
+# Publish artifacts
+publish/
+*.zip
+
+# Temporary files
+*.tmp
+*.temp
+
+# Windows
+Thumbs.db
+Desktop.ini
