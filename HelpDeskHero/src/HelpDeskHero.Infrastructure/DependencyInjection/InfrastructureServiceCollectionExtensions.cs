@@ -3,6 +3,11 @@ using HelpDeskHero.Infrastructure.Persistence.Seeding;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using HelpDeskHero.Application.Common;
+using HelpDeskHero.Application.Security;
+using HelpDeskHero.Application.Tickets;
+using HelpDeskHero.Infrastructure.Identity;
+using HelpDeskHero.Infrastructure.Services;
 
 namespace HelpDeskHero.Infrastructure.DependencyInjection;
 
@@ -22,7 +27,12 @@ public static class InfrastructureServiceCollectionExtensions
 
         services.AddDbContext<AppDbContext>(options =>
             options.UseSqlServer(connectionString));
+services.AddScoped<IAppDbContext>(sp =>
+    sp.GetRequiredService<AppDbContext>());
 
+services.AddScoped<ICurrentTenantProvider, DemoCurrentTenantProvider>();
+services.AddScoped<ITicketNumberGenerator, SimpleTicketNumberGenerator>();
+services.AddScoped<ITicketApplicationService, TicketApplicationService>();
         services.AddScoped<IDatabaseSeeder, DatabaseSeeder>();
 
         services.AddScoped<ISeedStep, TenantSeedStep>();
