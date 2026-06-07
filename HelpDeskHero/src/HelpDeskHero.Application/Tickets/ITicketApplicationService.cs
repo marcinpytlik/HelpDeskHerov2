@@ -7,4 +7,12 @@ public interface ITicketApplicationService
     Task<TicketDetailsDto> CreateAsync(
         CreateTicketRequest request,
         CancellationToken cancellationToken);
+
+    Task<TicketDetailsDto?> GetByIdAsync(
+        int id,
+        CancellationToken cancellationToken);
+
+    Task<IReadOnlyList<TicketListItemDto>> SearchAsync(
+        TicketSearchRequest request,
+        CancellationToken cancellationToken);
 }

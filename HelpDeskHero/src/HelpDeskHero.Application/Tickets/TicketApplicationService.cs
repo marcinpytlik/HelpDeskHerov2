@@ -122,4 +122,90 @@ public sealed class TicketApplicationService : ITicketApplicationService
             CreatedAtUtc = ticket.CreatedAtUtc
         };
     }
+
+    public async Task<TicketDetailsDto?> GetByIdAsync(
+        int id,
+        CancellationToken cancellationToken)
+    {
+        var tenantId = await _tenantProvider.GetCurrentTenantIdAsync(cancellationToken);
+
+        return await _db.Tickets
+            .AsNoTracking()
+            .Where(x => x.Id == id
+                        && x.TenantId == tenantId
+                        && !x.IsDeleted)
+            .Select(x => new TicketDetailsDto
+            {
+                Id = x.Id,
+                Number = x.Number,
+                Title = x.Title,
+                Description = x.Description,
+                Priority = x.Priority.ToString(),
+                TicketType = x.TicketType.Name,
+                WorkflowState = x.WorkflowState.Name,
+                CreatedAtUtc = x.CreatedAtUtc
+            })
+            .SingleOrDefaultAsync(cancellationToken);
+    }
+
+    public async Task<IReadOnlyList<TicketListItemDto>> SearchAsync(
+        TicketSearchRequest request,
+        CancellationToken cancellationToken)
+    {
+        var tenantId = await _tenantProvider.GetCurrentTenantIdAsync(cancellationToken);
+
+        var page = request.Page < 1 ? 1 : request.Page;
+        var pageSize = request.PageSize is < 1 or > 100 ? 20 : request.PageSize;
+
+        var query = _db.Tickets
+            .AsNoTracking()
+            .Where(x => x.TenantId == tenantId && !x.IsDeleted);
+
+        if (!string.IsNullOrWhiteSpace(request.SearchText))
+        {
+            var search = request.SearchText.Trim();
+
+            query = query.Where(x =>
+                x.Number.Contains(search) ||
+                x.Title.Contains(search));
+        }
+
+        if (request.TicketTypeId is not null)
+        {
+            query = query.Where(x => x.TicketTypeId == request.TicketTypeId);
+        }
+
+        if (request.WorkflowStateId is not null)
+        {
+            query = query.Where(x => x.WorkflowStateId == request.WorkflowStateId);
+        }
+
+        if (!string.IsNullOrWhiteSpace(request.Priority))
+        {
+            if (Enum.TryParse<TicketPriority>(
+                    request.Priority,
+                    ignoreCase: true,
+                    out var priority))
+            {
+                query = query.Where(x => x.Priority == priority);
+            }
+        }
+
+        return await query
+            .OrderByDescending(x => x.CreatedAtUtc)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .Select(x => new TicketListItemDto
+            {
+                Id = x.Id,
+                Number = x.Number,
+                Title = x.Title,
+                Priority = x.Priority.ToString(),
+                TicketType = x.TicketType.Name,
+                WorkflowState = x.WorkflowState.Name,
+                AssignedToUserId = x.AssignedToUserId,
+                CreatedAtUtc = x.CreatedAtUtc
+            })
+            .ToListAsync(cancellationToken);
+    }
 }

@@ -29,8 +29,27 @@ public sealed class TicketsController : ControllerBase
     }
 
     [HttpGet("{id:int}")]
-    public IActionResult GetById(int id)
+    public async Task<ActionResult<TicketDetailsDto>> GetById(
+        int id,
+        CancellationToken cancellationToken)
     {
-        return Ok(new { Id = id });
+        var result = await _tickets.GetByIdAsync(id, cancellationToken);
+
+        if (result is null)
+        {
+            return NotFound();
+        }
+
+        return Ok(result);
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<IReadOnlyList<TicketListItemDto>>> Search(
+        [FromQuery] TicketSearchRequest request,
+        CancellationToken cancellationToken)
+    {
+        var result = await _tickets.SearchAsync(request, cancellationToken);
+
+        return Ok(result);
     }
 }
