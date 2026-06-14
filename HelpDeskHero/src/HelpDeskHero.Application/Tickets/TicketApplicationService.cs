@@ -12,25 +12,25 @@ public sealed class TicketApplicationService : ITicketApplicationService
     private readonly IAppDbContext _db;
     private readonly ICurrentTenantProvider _tenantProvider;
     private readonly ITicketNumberGenerator _numberGenerator;
+    private readonly TicketBusinessValidator _validator;
 
     public TicketApplicationService(
-        IAppDbContext db,
-        ICurrentTenantProvider tenantProvider,
-        ITicketNumberGenerator numberGenerator)
-    {
-        _db = db;
-        _tenantProvider = tenantProvider;
-        _numberGenerator = numberGenerator;
-    }
+    IAppDbContext db,
+    ICurrentTenantProvider tenantProvider,
+    ITicketNumberGenerator numberGenerator,
+    TicketBusinessValidator validator)
+{
+    _db = db;
+    _tenantProvider = tenantProvider;
+    _numberGenerator = numberGenerator;
+    _validator = validator;
+}
 
     public async Task<TicketDetailsDto> CreateAsync(
         CreateTicketRequest request,
         CancellationToken cancellationToken)
     {
-        if (string.IsNullOrWhiteSpace(request.Title))
-        {
-            throw new InvalidOperationException("Ticket title is required.");
-        }
+        _validator.ValidateCreate(request);
 
         var tenantId = await _tenantProvider.GetCurrentTenantIdAsync(cancellationToken);
 
@@ -43,7 +43,10 @@ public sealed class TicketApplicationService : ITicketApplicationService
 
         if (ticketType is null)
         {
-            throw new InvalidOperationException("Ticket type was not found.");
+            //throw new InvalidOperationException("Ticket type was not found.");
+            throw new BusinessRuleException(
+                "TicketTypeNotFound",
+                "Ticket type was not found.");
         }
 
         if (request.OrganizationUnitId is not null)
@@ -57,7 +60,10 @@ public sealed class TicketApplicationService : ITicketApplicationService
 
             if (!organizationUnitExists)
             {
-                throw new InvalidOperationException("Organization unit was not found.");
+                //throw new InvalidOperationException("Organization unit was not found.");
+                throw new BusinessRuleException(
+                    "OrganizationUnitNotFound",
+                    "Organization unit was not found.");
             }
         }
 
@@ -72,14 +78,20 @@ public sealed class TicketApplicationService : ITicketApplicationService
 
         if (workflow is null)
         {
-            throw new InvalidOperationException("Default workflow was not found.");
+            //throw new InvalidOperationException("Default workflow was not found.");
+            throw new BusinessRuleException(
+                "WorkflowNotFound",
+                "Default workflow was not found.");
         }
 
         var startState = workflow.States.SingleOrDefault(x => x.IsStart);
 
         if (startState is null)
         {
-            throw new InvalidOperationException("Workflow start state was not found.");
+            //throw new InvalidOperationException("Workflow start state was not found.");
+            throw new BusinessRuleException(
+                "WorkflowStateNotFound",
+                "Workflow start state was not found.");
         }
 
         if (!Enum.TryParse<TicketPriority>(

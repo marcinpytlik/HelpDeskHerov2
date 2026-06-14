@@ -1,5 +1,6 @@
 using HelpDeskHero.Api.Extensions;
 using HelpDeskHero.Infrastructure.DependencyInjection;
+using HelpDeskHero.Api.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +12,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
-
+app.UseMiddleware<ErrorHandlingMiddleware>();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

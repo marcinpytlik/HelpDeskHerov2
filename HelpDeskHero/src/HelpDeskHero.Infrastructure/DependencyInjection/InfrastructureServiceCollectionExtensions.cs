@@ -29,7 +29,7 @@ public static class InfrastructureServiceCollectionExtensions
             options.UseSqlServer(connectionString));
 services.AddScoped<IAppDbContext>(sp =>
     sp.GetRequiredService<AppDbContext>());
-
+services.AddScoped<TicketBusinessValidator>();
 services.AddScoped<ICurrentTenantProvider, DemoCurrentTenantProvider>();
 services.AddScoped<ITicketNumberGenerator, SimpleTicketNumberGenerator>();
 services.AddScoped<ITicketApplicationService, TicketApplicationService>();
