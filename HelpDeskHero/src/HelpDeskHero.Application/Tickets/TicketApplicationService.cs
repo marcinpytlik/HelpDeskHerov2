@@ -220,4 +220,73 @@ public sealed class TicketApplicationService : ITicketApplicationService
             })
             .ToListAsync(cancellationToken);
     }
+    public async Task<TicketDetailsDto> ChangeStateAsync(
+    int ticketId,
+    ChangeTicketStateRequest request,
+    CancellationToken cancellationToken)
+{
+    var tenantId = await _tenantProvider.GetCurrentTenantIdAsync(cancellationToken);
+
+    var ticket = await _db.Tickets
+        .Include(x => x.TicketType)
+        .Include(x => x.WorkflowState)
+        .SingleOrDefaultAsync(
+            x => x.Id == ticketId
+                 && x.TenantId == tenantId
+                 && !x.IsDeleted,
+            cancellationToken);
+
+    if (ticket is null)
+    {
+        throw new BusinessRuleException(
+            "ticket_not_found",
+            "Ticket was not found.");
+    }
+
+    var transition = await _db.WorkflowTransitions
+        .Include(x => x.ToState)
+        .SingleOrDefaultAsync(
+            x => x.WorkflowDefinitionId == ticket.WorkflowState.WorkflowDefinitionId
+                 && x.FromStateId == ticket.WorkflowStateId
+                 && x.ToStateId == request.ToStateId
+                 && x.IsActive,
+            cancellationToken);
+
+    if (transition is null)
+    {
+        throw new BusinessRuleException(
+            "workflow_transition_not_allowed",
+            "Workflow transition is not allowed.");
+    }
+
+    if (transition.RequiresComment && string.IsNullOrWhiteSpace(request.Comment))
+    {
+        throw new BusinessRuleException(
+            "workflow_transition_comment_required",
+            "Comment is required for this transition.");
+    }
+
+    ticket.WorkflowStateId = transition.ToStateId;
+    ticket.UpdatedAtUtc = DateTime.UtcNow;
+    ticket.UpdatedByUserId = "demo-user";
+
+    if (transition.ToState.IsFinal)
+    {
+        ticket.ClosedAtUtc = DateTime.UtcNow;
+    }
+
+    await _db.SaveChangesAsync(cancellationToken);
+
+    return new TicketDetailsDto
+    {
+        Id = ticket.Id,
+        Number = ticket.Number,
+        Title = ticket.Title,
+        Description = ticket.Description,
+        Priority = ticket.Priority.ToString(),
+        TicketType = ticket.TicketType.Name,
+        WorkflowState = transition.ToState.Name,
+        CreatedAtUtc = ticket.CreatedAtUtc
+    };
+}
 }

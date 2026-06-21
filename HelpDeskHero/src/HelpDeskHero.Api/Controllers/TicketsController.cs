@@ -52,4 +52,18 @@ public sealed class TicketsController : ControllerBase
 
         return Ok(result);
     }
+
+    [HttpPost("{id:int}/change-state")]
+    public async Task<ActionResult<TicketDetailsDto>> ChangeState(
+        int id,
+        ChangeTicketStateRequest request,
+        CancellationToken cancellationToken)
+    {
+        var result = await _tickets.ChangeStateAsync(
+            id,
+            request,
+            cancellationToken);
+
+        return Ok(result);
+    }
 }

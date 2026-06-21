@@ -15,4 +15,9 @@ public interface ITicketApplicationService
     Task<IReadOnlyList<TicketListItemDto>> SearchAsync(
         TicketSearchRequest request,
         CancellationToken cancellationToken);
+
+    Task<TicketDetailsDto> ChangeStateAsync(
+        int ticketId,
+        ChangeTicketStateRequest request,
+        CancellationToken cancellationToken);
 }
