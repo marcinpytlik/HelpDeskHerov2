@@ -24,12 +24,14 @@ public sealed class Ticket : AuditableEntity
 
     public TicketPriority Priority { get; set; } = TicketPriority.Normal;
 
-    public string CreatedByUserId { get; set; } = string.Empty;
-    public string? AssignedToUserId { get; set; }
+        public string? AssignedToUserId { get; set; }
 
     public DateTime? DueResponseAtUtc { get; set; }
     public DateTime? DueResolveAtUtc { get; set; }
 
     public DateTime? ResolvedAtUtc { get; set; }
     public DateTime? ClosedAtUtc { get; set; }
+    public ICollection<TicketComment> Comments { get; set; } = [];
+
+public ICollection<TicketHistoryEntry> History { get; set; } = [];
 }

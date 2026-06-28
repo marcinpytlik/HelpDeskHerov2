@@ -66,4 +66,28 @@ public sealed class TicketsController : ControllerBase
 
         return Ok(result);
     }
+    [HttpPost("{id:int}/comments")]
+public async Task<IActionResult> AddComment(
+    int id,
+    AddCommentRequest request,
+    CancellationToken cancellationToken)
+{
+    await _tickets.AddCommentAsync(
+        id,
+        request,
+        cancellationToken);
+
+    return NoContent();
+}
+[HttpGet("{id:int}/history")]
+public async Task<ActionResult<IReadOnlyList<TicketHistoryItemDto>>> GetHistory(
+    int id,
+    CancellationToken cancellationToken)
+{
+    var result = await _tickets.GetHistoryAsync(
+        id,
+        cancellationToken);
+
+    return Ok(result);
+}
 }

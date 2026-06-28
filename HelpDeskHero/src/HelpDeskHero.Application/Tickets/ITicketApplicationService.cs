@@ -20,4 +20,13 @@ public interface ITicketApplicationService
         int ticketId,
         ChangeTicketStateRequest request,
         CancellationToken cancellationToken);
+
+    Task AddCommentAsync(
+        int ticketId,
+        AddCommentRequest request,
+        CancellationToken cancellationToken);
+
+    Task<IReadOnlyList<TicketHistoryItemDto>> GetHistoryAsync(
+        int ticketId,
+        CancellationToken cancellationToken);
 }

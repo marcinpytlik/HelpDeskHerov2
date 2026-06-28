@@ -220,7 +220,7 @@ public sealed class TicketApplicationService : ITicketApplicationService
             })
             .ToListAsync(cancellationToken);
     }
-    public async Task<TicketDetailsDto> ChangeStateAsync(
+public async Task<TicketDetailsDto> ChangeStateAsync(
     int ticketId,
     ChangeTicketStateRequest request,
     CancellationToken cancellationToken)
@@ -266,14 +266,31 @@ public sealed class TicketApplicationService : ITicketApplicationService
             "Comment is required for this transition.");
     }
 
+    var now = DateTime.UtcNow;
+    var userId = "demo-user";
+
+    var oldStateName = ticket.WorkflowState.Name;
+    var newStateName = transition.ToState.Name;
+
     ticket.WorkflowStateId = transition.ToStateId;
-    ticket.UpdatedAtUtc = DateTime.UtcNow;
-    ticket.UpdatedByUserId = "demo-user";
+    ticket.UpdatedAtUtc = now;
+    ticket.UpdatedByUserId = userId;
 
     if (transition.ToState.IsFinal)
     {
-        ticket.ClosedAtUtc = DateTime.UtcNow;
+        ticket.ClosedAtUtc = now;
     }
+
+    _db.TicketHistoryEntries.Add(new TicketHistoryEntry
+    {
+        TicketId = ticket.Id,
+        EventType = "StateChanged",
+        OldValue = oldStateName,
+        NewValue = newStateName,
+        Comment = request.Comment,
+        CreatedAtUtc = now,
+        CreatedByUserId = userId
+    });
 
     await _db.SaveChangesAsync(cancellationToken);
 
@@ -285,8 +302,96 @@ public sealed class TicketApplicationService : ITicketApplicationService
         Description = ticket.Description,
         Priority = ticket.Priority.ToString(),
         TicketType = ticket.TicketType.Name,
-        WorkflowState = transition.ToState.Name,
+        WorkflowState = newStateName,
         CreatedAtUtc = ticket.CreatedAtUtc
     };
+}
+public async Task AddCommentAsync(
+    int ticketId,
+    AddCommentRequest request,
+    CancellationToken cancellationToken)
+{
+    var tenantId = await _tenantProvider.GetCurrentTenantIdAsync(cancellationToken);
+
+    var ticket = await _db.Tickets
+        .SingleOrDefaultAsync(
+            x => x.Id == ticketId
+                 && x.TenantId == tenantId
+                 && !x.IsDeleted,
+            cancellationToken);
+
+    if (ticket is null)
+    {
+        throw new BusinessRuleException(
+            "ticket_not_found",
+            "Ticket was not found.");
+    }
+
+    if (string.IsNullOrWhiteSpace(request.Body))
+    {
+        throw new BusinessRuleException(
+            "comment_body_required",
+            "Comment body is required.");
+    }
+
+    var now = DateTime.UtcNow;
+    var userId = "demo-user";
+    var body = request.Body.Trim();
+
+    _db.TicketComments.Add(new TicketComment
+    {
+        TicketId = ticket.Id,
+        Body = body,
+        IsInternal = request.IsInternal,
+        CreatedAtUtc = now,
+        CreatedByUserId = userId
+    });
+
+    _db.TicketHistoryEntries.Add(new TicketHistoryEntry
+    {
+        TicketId = ticket.Id,
+        EventType = "CommentAdded",
+        Comment = body,
+        CreatedAtUtc = now,
+        CreatedByUserId = userId
+    });
+
+    await _db.SaveChangesAsync(cancellationToken);
+}
+public async Task<IReadOnlyList<TicketHistoryItemDto>> GetHistoryAsync(
+    int ticketId,
+    CancellationToken cancellationToken)
+{
+    var tenantId = await _tenantProvider.GetCurrentTenantIdAsync(cancellationToken);
+
+    var ticketExists = await _db.Tickets
+        .AnyAsync(
+            x => x.Id == ticketId
+                 && x.TenantId == tenantId
+                 && !x.IsDeleted,
+            cancellationToken);
+
+    if (!ticketExists)
+    {
+        throw new BusinessRuleException(
+            "ticket_not_found",
+            "Ticket was not found.");
+    }
+
+    return await _db.TicketHistoryEntries
+        .AsNoTracking()
+        .Where(x => x.TicketId == ticketId)
+        .OrderByDescending(x => x.CreatedAtUtc)
+        .Select(x => new TicketHistoryItemDto
+        {
+            Id = x.Id,
+            EventType = x.EventType,
+            OldValue = x.OldValue,
+            NewValue = x.NewValue,
+            Comment = x.Comment,
+            CreatedByUserId = x.CreatedByUserId,
+            CreatedAtUtc = x.CreatedAtUtc
+        })
+        .ToListAsync(cancellationToken);
 }
 }

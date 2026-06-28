@@ -10,7 +10,9 @@ public sealed class AppDbContext : DbContext, IAppDbContext
         : base(options)
     {
     }
+public DbSet<TicketComment> TicketComments => Set<TicketComment>();
 
+public DbSet<TicketHistoryEntry> TicketHistoryEntries => Set<TicketHistoryEntry>();
     public DbSet<Tenant> Tenants => Set<Tenant>();
     public DbSet<OrganizationUnit> OrganizationUnits => Set<OrganizationUnit>();
     public DbSet<TicketType> TicketTypes => Set<TicketType>();
