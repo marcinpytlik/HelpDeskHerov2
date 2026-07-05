@@ -90,4 +90,22 @@ public async Task<ActionResult<IReadOnlyList<TicketHistoryItemDto>>> GetHistory(
 
     return Ok(result);
 }
+[HttpDelete("{id:int}")]
+public async Task<IActionResult> Delete(
+    int id,
+    CancellationToken cancellationToken)
+{
+    await _tickets.DeleteAsync(id, cancellationToken);
+
+    return NoContent();
+}
+[HttpPost("{id:int}/restore")]
+public async Task<IActionResult> Restore(
+    int id,
+    CancellationToken cancellationToken)
+{
+    await _tickets.RestoreAsync(id, cancellationToken);
+
+    return NoContent();
+}
 }

@@ -29,4 +29,12 @@ public interface ITicketApplicationService
     Task<IReadOnlyList<TicketHistoryItemDto>> GetHistoryAsync(
         int ticketId,
         CancellationToken cancellationToken);
+
+    Task DeleteAsync(
+        int ticketId,
+        CancellationToken cancellationToken);
+
+    Task RestoreAsync(
+        int ticketId,
+        CancellationToken cancellationToken);
 }

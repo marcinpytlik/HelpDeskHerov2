@@ -358,7 +358,7 @@ public async Task AddCommentAsync(
 
     await _db.SaveChangesAsync(cancellationToken);
 }
-public async Task<IReadOnlyList<TicketHistoryItemDto>> GetHistoryAsync(
+/*public async Task<IReadOnlyList<TicketHistoryItemDto>> GetHistoryAsync(
     int ticketId,
     CancellationToken cancellationToken)
 {
@@ -389,9 +389,112 @@ public async Task<IReadOnlyList<TicketHistoryItemDto>> GetHistoryAsync(
             OldValue = x.OldValue,
             NewValue = x.NewValue,
             Comment = x.Comment,
-            CreatedByUserId = x.CreatedByUserId,
+            CreatedByUserId = x.CreatedByUserId ?? string.Empty,
             CreatedAtUtc = x.CreatedAtUtc
         })
         .ToListAsync(cancellationToken);
+} */
+public async Task<IReadOnlyList<TicketHistoryItemDto>> GetHistoryAsync
+( int ticketId,
+ CancellationToken cancellationToken)
+  {
+     var tenantId = await _tenantProvider.GetCurrentTenantIdAsync(cancellationToken);
+     var ticketExists = await _db.Tickets .AnyAsync( x => x.Id == ticketId && x.TenantId == tenantId, cancellationToken);
+      if (!ticketExists) { 
+        throw new BusinessRuleException( "ticket_not_found", "Ticket was not found.");
+         }
+          return await _db.TicketHistoryEntries .AsNoTracking() .Where(x => x.TicketId == ticketId) .OrderByDescending(x => x.CreatedAtUtc)
+           .Select(x => new TicketHistoryItemDto {
+             Id = x.Id,
+             EventType = x.EventType,
+             OldValue = x.OldValue,
+             NewValue = x.NewValue,
+             Comment = x.Comment,
+             CreatedByUserId = x.CreatedByUserId ?? string.Empty, CreatedAtUtc = x.CreatedAtUtc 
+             }) .ToListAsync(cancellationToken);
+    }
+public async Task DeleteAsync(
+    int ticketId,
+    CancellationToken cancellationToken)
+{
+    var tenantId = await _tenantProvider.GetCurrentTenantIdAsync(cancellationToken);
+
+    var ticket = await _db.Tickets
+        .SingleOrDefaultAsync(
+            x => x.Id == ticketId
+                 && x.TenantId == tenantId
+                 && !x.IsDeleted,
+            cancellationToken);
+
+    if (ticket is null)
+    {
+        throw new BusinessRuleException(
+            "ticket_not_found",
+            "Ticket was not found.");
+    }
+
+    var now = DateTime.UtcNow;
+    var userId = "demo-user";
+
+    ticket.IsDeleted = true;
+    ticket.DeletedAtUtc = now;
+    ticket.DeletedByUserId = userId;
+    ticket.UpdatedAtUtc = now;
+    ticket.UpdatedByUserId = userId;
+
+    _db.TicketHistoryEntries.Add(new TicketHistoryEntry
+    {
+        TicketId = ticket.Id,
+        EventType = "TicketDeleted",
+        OldValue = "Active",
+        NewValue = "Deleted",
+        Comment = "Ticket was soft deleted.",
+        CreatedAtUtc = now,
+        CreatedByUserId = userId
+    });
+
+    await _db.SaveChangesAsync(cancellationToken);
+}
+public async Task RestoreAsync(
+    int ticketId,
+    CancellationToken cancellationToken)
+{
+    var tenantId = await _tenantProvider.GetCurrentTenantIdAsync(cancellationToken);
+
+    var ticket = await _db.Tickets
+        .SingleOrDefaultAsync(
+            x => x.Id == ticketId
+                 && x.TenantId == tenantId
+                 && x.IsDeleted,
+            cancellationToken);
+
+    if (ticket is null)
+    {
+        throw new BusinessRuleException(
+            "deleted_ticket_not_found",
+            "Deleted ticket was not found.");
+    }
+
+    var now = DateTime.UtcNow;
+    var userId = "demo-user";
+
+    ticket.IsDeleted = false;
+    ticket.DeletedAtUtc = null;
+    ticket.DeletedByUserId = null;
+    ticket.UpdatedAtUtc = now;
+    ticket.UpdatedByUserId = userId;
+
+    _db.TicketHistoryEntries.Add(new TicketHistoryEntry
+    {
+        TicketId = ticket.Id,
+        EventType = "TicketRestored",
+        OldValue = "Deleted",
+        NewValue = "Active",
+        Comment = "Ticket was restored.",
+        CreatedAtUtc = now,
+        CreatedByUserId = userId
+    });
+
+    await _db.SaveChangesAsync(cancellationToken);
 }
 }

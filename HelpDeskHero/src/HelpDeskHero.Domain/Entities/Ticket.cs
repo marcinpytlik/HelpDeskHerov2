@@ -31,6 +31,7 @@ public sealed class Ticket : AuditableEntity
 
     public DateTime? ResolvedAtUtc { get; set; }
     public DateTime? ClosedAtUtc { get; set; }
+    
     public ICollection<TicketComment> Comments { get; set; } = [];
 
 public ICollection<TicketHistoryEntry> History { get; set; } = [];
