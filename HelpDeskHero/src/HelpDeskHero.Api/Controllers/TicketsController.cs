@@ -108,4 +108,17 @@ public async Task<IActionResult> Restore(
 
     return NoContent();
 }
+[HttpPut("{id:int}")]
+public async Task<ActionResult<TicketDetailsDto>> Update(
+    int id,
+    UpdateTicketRequest request,
+    CancellationToken cancellationToken)
+{
+    var result = await _tickets.UpdateAsync(
+        id,
+        request,
+        cancellationToken);
+
+    return Ok(result);
+}
 }

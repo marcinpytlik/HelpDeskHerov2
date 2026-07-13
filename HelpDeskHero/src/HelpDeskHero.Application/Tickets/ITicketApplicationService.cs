@@ -37,4 +37,9 @@ public interface ITicketApplicationService
     Task RestoreAsync(
         int ticketId,
         CancellationToken cancellationToken);
+
+    Task<TicketDetailsDto> UpdateAsync(
+        int ticketId,
+        UpdateTicketRequest request,
+        CancellationToken cancellationToken);
 }

@@ -155,7 +155,8 @@ public sealed class TicketApplicationService : ITicketApplicationService
                 Priority = x.Priority.ToString(),
                 TicketType = x.TicketType.Name,
                 WorkflowState = x.WorkflowState.Name,
-                CreatedAtUtc = x.CreatedAtUtc
+                CreatedAtUtc = x.CreatedAtUtc,
+                RowVersion = Convert.ToBase64String(x.RowVersion)
             })
             .SingleOrDefaultAsync(cancellationToken);
     }
@@ -303,7 +304,8 @@ public async Task<TicketDetailsDto> ChangeStateAsync(
         Priority = ticket.Priority.ToString(),
         TicketType = ticket.TicketType.Name,
         WorkflowState = newStateName,
-        CreatedAtUtc = ticket.CreatedAtUtc
+        CreatedAtUtc = ticket.CreatedAtUtc,
+        RowVersion = Convert.ToBase64String(ticket.RowVersion)
     };
 }
 public async Task AddCommentAsync(
@@ -358,42 +360,7 @@ public async Task AddCommentAsync(
 
     await _db.SaveChangesAsync(cancellationToken);
 }
-/*public async Task<IReadOnlyList<TicketHistoryItemDto>> GetHistoryAsync(
-    int ticketId,
-    CancellationToken cancellationToken)
-{
-    var tenantId = await _tenantProvider.GetCurrentTenantIdAsync(cancellationToken);
 
-    var ticketExists = await _db.Tickets
-        .AnyAsync(
-            x => x.Id == ticketId
-                 && x.TenantId == tenantId
-                 && !x.IsDeleted,
-            cancellationToken);
-
-    if (!ticketExists)
-    {
-        throw new BusinessRuleException(
-            "ticket_not_found",
-            "Ticket was not found.");
-    }
-
-    return await _db.TicketHistoryEntries
-        .AsNoTracking()
-        .Where(x => x.TicketId == ticketId)
-        .OrderByDescending(x => x.CreatedAtUtc)
-        .Select(x => new TicketHistoryItemDto
-        {
-            Id = x.Id,
-            EventType = x.EventType,
-            OldValue = x.OldValue,
-            NewValue = x.NewValue,
-            Comment = x.Comment,
-            CreatedByUserId = x.CreatedByUserId ?? string.Empty,
-            CreatedAtUtc = x.CreatedAtUtc
-        })
-        .ToListAsync(cancellationToken);
-} */
 public async Task<IReadOnlyList<TicketHistoryItemDto>> GetHistoryAsync
 ( int ticketId,
  CancellationToken cancellationToken)
@@ -496,5 +463,114 @@ public async Task RestoreAsync(
     });
 
     await _db.SaveChangesAsync(cancellationToken);
+}
+public async Task<TicketDetailsDto> UpdateAsync(
+    int ticketId,
+    UpdateTicketRequest request,
+    CancellationToken cancellationToken)
+{
+    if (string.IsNullOrWhiteSpace(request.Title))
+    {
+        throw new BusinessRuleException(
+            "ticket_title_required",
+            "Ticket title is required.");
+    }
+
+    if (request.Title.Length > 200)
+    {
+        throw new BusinessRuleException(
+            "ticket_title_too_long",
+            "Ticket title cannot be longer than 200 characters.");
+    }
+
+    if (string.IsNullOrWhiteSpace(request.RowVersion))
+    {
+        throw new BusinessRuleException(
+            "row_version_required",
+            "RowVersion is required.");
+    }
+
+    if (!Enum.TryParse<TicketPriority>(
+            request.Priority,
+            ignoreCase: true,
+            out var priority))
+    {
+        throw new BusinessRuleException(
+            "ticket_priority_invalid",
+            "Ticket priority has invalid value.");
+    }
+
+    byte[] originalRowVersion;
+
+    try
+    {
+        originalRowVersion = Convert.FromBase64String(request.RowVersion);
+    }
+    catch (FormatException)
+    {
+        throw new BusinessRuleException(
+            "row_version_invalid",
+            "RowVersion has invalid format.");
+    }
+
+    var tenantId = await _tenantProvider.GetCurrentTenantIdAsync(cancellationToken);
+
+    var ticket = await _db.Tickets
+        .Include(x => x.TicketType)
+        .Include(x => x.WorkflowState)
+        .SingleOrDefaultAsync(
+            x => x.Id == ticketId
+                 && x.TenantId == tenantId
+                 && !x.IsDeleted,
+            cancellationToken);
+
+    if (ticket is null)
+    {
+        throw new BusinessRuleException(
+            "ticket_not_found",
+            "Ticket was not found.");
+    }
+
+    var now = DateTime.UtcNow;
+    var userId = "demo-user";
+
+    var oldTitle = ticket.Title;
+    var oldPriority = ticket.Priority.ToString();
+
+    ticket.Title = request.Title.Trim();
+    ticket.Description = request.Description;
+    ticket.Priority = priority;
+    ticket.UpdatedAtUtc = now;
+    ticket.UpdatedByUserId = userId;
+
+    _db.Entry(ticket)
+        .Property(x => x.RowVersion)
+        .OriginalValue = originalRowVersion;
+
+    _db.TicketHistoryEntries.Add(new TicketHistoryEntry
+    {
+        TicketId = ticket.Id,
+        EventType = "TicketUpdated",
+        OldValue = $"{oldTitle} / {oldPriority}",
+        NewValue = $"{ticket.Title} / {ticket.Priority}",
+        Comment = "Ticket was updated.",
+        CreatedAtUtc = now,
+        CreatedByUserId = userId
+    });
+
+    await _db.SaveChangesAsync(cancellationToken);
+
+    return new TicketDetailsDto
+    {
+        Id = ticket.Id,
+        Number = ticket.Number,
+        Title = ticket.Title,
+        Description = ticket.Description,
+        Priority = ticket.Priority.ToString(),
+        TicketType = ticket.TicketType.Name,
+        WorkflowState = ticket.WorkflowState.Name,
+        CreatedAtUtc = ticket.CreatedAtUtc,
+        RowVersion = Convert.ToBase64String(ticket.RowVersion)
+    };
 }
 }

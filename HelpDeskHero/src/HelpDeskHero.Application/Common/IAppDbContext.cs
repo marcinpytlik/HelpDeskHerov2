@@ -1,5 +1,6 @@
 using HelpDeskHero.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace HelpDeskHero.Application.Common;
 
@@ -22,6 +23,7 @@ public interface IAppDbContext
     DbSet<TicketComment> TicketComments { get; }
 
     DbSet<TicketHistoryEntry> TicketHistoryEntries { get; }
-
+EntityEntry<TEntity> Entry<TEntity>(TEntity entity)
+    where TEntity : class;
     Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 }
