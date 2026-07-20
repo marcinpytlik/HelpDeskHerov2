@@ -113,9 +113,9 @@ public sealed class TicketApplicationService : ITicketApplicationService
             Number = number,
             Title = request.Title.Trim(),
             Description = request.Description,
-            Priority = priority,
-            CreatedByUserId = "demo-user",
-            CreatedAtUtc = DateTime.UtcNow
+            Priority = priority
+            //CreatedByUserId = "demo-user",
+            //CreatedAtUtc = DateTime.UtcNow
         };
 
         _db.Tickets.Add(ticket);
@@ -274,8 +274,8 @@ public async Task<TicketDetailsDto> ChangeStateAsync(
     var newStateName = transition.ToState.Name;
 
     ticket.WorkflowStateId = transition.ToStateId;
-    ticket.UpdatedAtUtc = now;
-    ticket.UpdatedByUserId = userId;
+    //ticket.UpdatedAtUtc = now;
+    //ticket.UpdatedByUserId = userId;
 
     if (transition.ToState.IsFinal)
     {
@@ -540,8 +540,8 @@ public async Task<TicketDetailsDto> UpdateAsync(
     ticket.Title = request.Title.Trim();
     ticket.Description = request.Description;
     ticket.Priority = priority;
-    ticket.UpdatedAtUtc = now;
-    ticket.UpdatedByUserId = userId;
+    //ticket.UpdatedAtUtc = now;
+    //ticket.UpdatedByUserId = userId;
 
     _db.Entry(ticket)
         .Property(x => x.RowVersion)
