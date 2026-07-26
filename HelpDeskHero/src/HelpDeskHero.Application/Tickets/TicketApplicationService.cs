@@ -114,8 +114,7 @@ public sealed class TicketApplicationService : ITicketApplicationService
             Title = request.Title.Trim(),
             Description = request.Description,
             Priority = priority
-            //CreatedByUserId = "demo-user",
-            //CreatedAtUtc = DateTime.UtcNow
+      
         };
 
         _db.Tickets.Add(ticket);
@@ -203,7 +202,8 @@ public sealed class TicketApplicationService : ITicketApplicationService
                 query = query.Where(x => x.Priority == priority);
             }
         }
-
+        //dopisujemy logowanie zapytania SQL do konsoli
+         Console.WriteLine(query.ToQueryString());
         return await query
             .OrderByDescending(x => x.CreatedAtUtc)
             .Skip((page - 1) * pageSize)
@@ -274,8 +274,7 @@ public async Task<TicketDetailsDto> ChangeStateAsync(
     var newStateName = transition.ToState.Name;
 
     ticket.WorkflowStateId = transition.ToStateId;
-    //ticket.UpdatedAtUtc = now;
-    //ticket.UpdatedByUserId = userId;
+   
 
     if (transition.ToState.IsFinal)
     {
@@ -406,8 +405,8 @@ public async Task DeleteAsync(
     ticket.IsDeleted = true;
     ticket.DeletedAtUtc = now;
     ticket.DeletedByUserId = userId;
-    ticket.UpdatedAtUtc = now;
-    ticket.UpdatedByUserId = userId;
+    //ticket.UpdatedAtUtc = now;
+    //ticket.UpdatedByUserId = userId;
 
     _db.TicketHistoryEntries.Add(new TicketHistoryEntry
     {
@@ -540,8 +539,7 @@ public async Task<TicketDetailsDto> UpdateAsync(
     ticket.Title = request.Title.Trim();
     ticket.Description = request.Description;
     ticket.Priority = priority;
-    //ticket.UpdatedAtUtc = now;
-    //ticket.UpdatedByUserId = userId;
+
 
     _db.Entry(ticket)
         .Property(x => x.RowVersion)

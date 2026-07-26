@@ -11,13 +11,15 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
+
 namespace HelpDeskHero.Infrastructure.DependencyInjection;
 
 public static class InfrastructureServiceCollectionExtensions
 {
     public static IServiceCollection AddInfrastructure(
-        this IServiceCollection services,
-        IConfiguration configuration)
+    this IServiceCollection services,
+    IConfiguration configuration,
+    bool isDevelopment)
     {
         var connectionString = configuration.GetConnectionString("DefaultConnection");
 
@@ -40,6 +42,11 @@ public static class InfrastructureServiceCollectionExtensions
             options.UseSqlServer(connectionString);
 
             options.AddInterceptors(auditableInterceptor);
+            //dodajemy logowanie 
+            if (isDevelopment)
+{
+    options.EnableSensitiveDataLogging();
+}
         });
 
         services.AddScoped<IAppDbContext>(sp =>

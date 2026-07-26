@@ -62,7 +62,16 @@ public sealed class TicketConfiguration : IEntityTypeConfiguration<Ticket>
 
         builder.HasIndex(x => new { x.TenantId, x.AssignedToUserId, x.CreatedAtUtc });
 
-        builder.HasIndex(x => new { x.TenantId, x.IsDeleted, x.CreatedAtUtc });
+        //builder.HasIndex(x => new { x.TenantId, x.IsDeleted, x.CreatedAtUtc });
+        builder.HasIndex(x => new { x.TenantId, x.IsDeleted, x.CreatedAtUtc })
+        .HasDatabaseName("IX_Tickets_TenantId_IsDeleted_CreatedAtUtc")
+        .IncludeProperties(x => new {
+             x.Number,
+             x.Title,
+             x.Priority,
+             x.TicketTypeId,
+             x.WorkflowStateId,
+             x.AssignedToUserId });
 
         builder.Property(x => x.RowVersion)
             .IsRowVersion();
