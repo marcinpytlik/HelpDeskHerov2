@@ -64,7 +64,7 @@ public sealed class TicketConfiguration : IEntityTypeConfiguration<Ticket>
 
         //builder.HasIndex(x => new { x.TenantId, x.IsDeleted, x.CreatedAtUtc });
         builder.HasIndex(x => new { x.TenantId, x.IsDeleted, x.CreatedAtUtc })
-        .HasDatabaseName("IX_Tickets_TenantId_IsDeleted_CreatedAtUtc")
+        .HasDatabaseName("IX_Tickets_TenantId_IsDeleted_CreatedAtUtc1")
         .IncludeProperties(x => new {
              x.Number,
              x.Title,

@@ -9,7 +9,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddInfrastructure(builder.Configuration,builder.Environment.IsDevelopment());
+builder.Services.AddInfrastructure(builder.Configuration,
+builder.Environment.IsDevelopment());
 
 var app = builder.Build();
 app.UseMiddleware<ErrorHandlingMiddleware>();

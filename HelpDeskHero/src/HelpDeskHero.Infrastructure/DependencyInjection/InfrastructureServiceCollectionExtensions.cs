@@ -42,6 +42,7 @@ public static class InfrastructureServiceCollectionExtensions
             options.UseSqlServer(connectionString);
 
             options.AddInterceptors(auditableInterceptor);
+            options.EnableDetailedErrors();
             //dodajemy logowanie 
             if (isDevelopment)
 {
