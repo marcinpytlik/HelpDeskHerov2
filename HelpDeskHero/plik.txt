@@ -1,0 +1,49 @@
+  Trwa określanie projektów do przywrócenia...
+  Wszystkie projekty są aktualne na potrzeby przywrócenia.
+  HelpDeskHero.Domain -> C:\Users\blad\Documents\GitHub\HelpDeskHerov2\HelpDeskHero\src\HelpDeskHero.Domain\bin\Debug\net10.0\HelpDeskHero.Domain.dll
+  HelpDeskHero.Shared -> C:\Users\blad\Documents\GitHub\HelpDeskHerov2\HelpDeskHero\src\HelpDeskHero.Shared\bin\Debug\net10.0\HelpDeskHero.Shared.dll
+  HelpDeskHero.Application -> C:\Users\blad\Documents\GitHub\HelpDeskHerov2\HelpDeskHero\src\HelpDeskHero.Application\bin\Debug\net10.0\HelpDeskHero.Application.dll
+  HelpDeskHero.Infrastructure -> C:\Users\blad\Documents\GitHub\HelpDeskHerov2\HelpDeskHero\src\HelpDeskHero.Infrastructure\bin\Debug\net10.0\HelpDeskHero.Infrastructure.dll
+  HelpDeskHero.UnitTests -> C:\Users\blad\Documents\GitHub\HelpDeskHerov2\HelpDeskHero\tests\HelpDeskHero.UnitTests\bin\Debug\net10.0\HelpDeskHero.UnitTests.dll
+Przebieg testu dla: C:\Users\blad\Documents\GitHub\HelpDeskHerov2\HelpDeskHero\tests\HelpDeskHero.UnitTests\bin\Debug\net10.0\HelpDeskHero.UnitTests.dll (.NETCoreApp,Version=v10.0)
+Wersja 18.0.2 (x64) VSTest
+
+Trwa rozpoczynanie wykonywania testu, czekaj...
+Łączna liczba plików testowych dopasowanych do określonego wzorca: 1.
+
+Powodzenie!    — niepowodzenie:     0, powodzenie:     1, pominięto:     0, łącznie:     1, czas trwania: 18 ms - HelpDeskHero.UnitTests.dll (net10.0)
+  HelpDeskHero.Api -> C:\Users\blad\Documents\GitHub\HelpDeskHerov2\HelpDeskHero\src\HelpDeskHero.Api\bin\Debug\net10.0\HelpDeskHero.Api.dll
+  HelpDeskHero.IntegrationTests -> C:\Users\blad\Documents\GitHub\HelpDeskHerov2\HelpDeskHero\tests\HelpDeskHero.IntegrationTests\bin\Debug\net10.0\HelpDeskHero.IntegrationTests.dll
+Przebieg testu dla: C:\Users\blad\Documents\GitHub\HelpDeskHerov2\HelpDeskHero\tests\HelpDeskHero.IntegrationTests\bin\Debug\net10.0\HelpDeskHero.IntegrationTests.dll (.NETCoreApp,Version=v10.0)
+Wersja 18.0.2 (x64) VSTest
+
+Trwa rozpoczynanie wykonywania testu, czekaj...
+Łączna liczba plików testowych dopasowanych do określonego wzorca: 1.
+  Niepowodzenie HelpDeskHero.IntegrationTests.Tickets.TicketsApiTests.UpdateTicket_Should_Return_New_RowVersion [2 s]
+  Komunikat o błędzie:
+   Expected response.StatusCode to be HttpStatusCode.OK {value: 200}, but found HttpStatusCode.BadRequest {value: 400}.
+  Ślad stosu:
+     at FluentAssertions.Execution.LateBoundTestFramework.Throw(String message)
+   at FluentAssertions.Execution.DefaultAssertionStrategy.HandleFailure(String message)
+   at FluentAssertions.Execution.AssertionScope.AddPreFormattedFailure(String formattedFailureMessage)
+   at FluentAssertions.Execution.AssertionChain.FailWith(Func`1 getFailureReason)
+   at FluentAssertions.Execution.AssertionChain.FailWith(Func`1 getFailureReason)
+   at FluentAssertions.Execution.AssertionChain.FailWith(String message, Object[] args)
+   at FluentAssertions.Primitives.EnumAssertions`2.Be(TEnum expected, String because, Object[] becauseArgs)
+   at HelpDeskHero.IntegrationTests.Tickets.TicketsApiTests.UpdateTicket_Should_Return_New_RowVersion() in C:\Users\blad\Documents\GitHub\HelpDeskHerov2\HelpDeskHero\tests\HelpDeskHero.IntegrationTests\Tickets\TicketsApiTests.cs:line 211
+--- End of stack trace from previous location ---
+  Niepowodzenie HelpDeskHero.IntegrationTests.Tickets.TicketsApiTests.UpdateTicket_With_Old_RowVersion_Should_Return_Conflict [44 ms]
+  Komunikat o błędzie:
+   Expected firstResponse.StatusCode to be HttpStatusCode.OK {value: 200}, but found HttpStatusCode.BadRequest {value: 400}.
+  Ślad stosu:
+     at FluentAssertions.Execution.LateBoundTestFramework.Throw(String message)
+   at FluentAssertions.Execution.DefaultAssertionStrategy.HandleFailure(String message)
+   at FluentAssertions.Execution.AssertionScope.AddPreFormattedFailure(String formattedFailureMessage)
+   at FluentAssertions.Execution.AssertionChain.FailWith(Func`1 getFailureReason)
+   at FluentAssertions.Execution.AssertionChain.FailWith(Func`1 getFailureReason)
+   at FluentAssertions.Execution.AssertionChain.FailWith(String message, Object[] args)
+   at FluentAssertions.Primitives.EnumAssertions`2.Be(TEnum expected, String because, Object[] becauseArgs)
+   at HelpDeskHero.IntegrationTests.Tickets.TicketsApiTests.UpdateTicket_With_Old_RowVersion_Should_Return_Conflict() in C:\Users\blad\Documents\GitHub\HelpDeskHerov2\HelpDeskHero\tests\HelpDeskHero.IntegrationTests\Tickets\TicketsApiTests.cs:line 238
+--- End of stack trace from previous location ---
+
+Niepowodzenie! — niepowodzenie:     2, powodzenie:     8, pominięto:     0, łącznie:    10, czas trwania: 3 s - HelpDeskHero.IntegrationTests.dll (net10.0)
