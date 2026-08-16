@@ -10,7 +10,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddInfrastructure(builder.Configuration,
-builder.Environment.IsDevelopment());
+builder.Environment.IsDevelopment() || builder.Environment.IsEnvironment("Testing"));
 
 var app = builder.Build();
 app.UseMiddleware<ErrorHandlingMiddleware>();

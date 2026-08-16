@@ -4,18 +4,19 @@ using FluentAssertions;
 using HelpDeskHero.Application.Tickets.Dtos;
 using HelpDeskHero.IntegrationTests.Common;
 using Xunit;
-
 namespace HelpDeskHero.IntegrationTests.Tickets;
 
-public sealed class TicketsApiTests
+[Collection(IntegrationTestCollection.Name)]
+public sealed class TicketsApiTests:IntegrationTestBase
 {
     private readonly HttpClient _client;
 
-    public TicketsApiTests()
+public TicketsApiTests(IntegrationTestFixture fixture)
+        : base(fixture)
     {
-        var factory = new CustomWebApplicationFactory();
-        _client = factory.CreateClient();
+        _client = Client;
     }
+   
 
     [Fact]
     public async Task CreateTicket_Should_Return_Created_Ticket()
